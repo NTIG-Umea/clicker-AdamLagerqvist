@@ -54,9 +54,23 @@ clickerButton.addEventListener('click', () => {
  * Sist i funktionen så kallar den på sig själv igen för att fortsätta uppdatera.
  */
 function step(timestamp) {
-  moneyTracker.textContent = Math.round(money);
+  if(money >= 1000000){
+    moneyTracker.textContent = (money/1000000).toFixed(2) + ' miljoner'
+  }else if(money >= 1000){
+    moneyTracker.textContent = (money/1000).toFixed(2) + ' tusen'
+  }else{
+    moneyTracker.textContent = Math.round(money);
+  }
   mpsTracker.textContent = moneyPerSecond;
   followerTracker.textContent = moneyPerClick;
+  upgrades.forEach(upgrade => {
+    document.getElementById(upgrade.name + ' total').textContent = 'You have ' + upgrade.count + ' making a total of ' + upgrade.amount * upgrade.count + '  PPS'
+    if(upgrade.cost <= money){
+     document.getElementById(upgrade.name + ' cost').style.color = 'limegreen'
+    }else{
+      document.getElementById(upgrade.name + ' cost').style.color = 'Firebrick'
+    }
+  });
 
   if (timestamp >= last + 1000) {
     money += moneyPerSecond;
@@ -161,7 +175,7 @@ function createCard2(upgrade2) {
     for (i = 0; i < upgrades.length; i++){
       moneyPerSecond += upgrades[i].amount * upgrades[i].count;
     }
-    document.getElementById(upgrades[upgrade2.upFor].name).textContent = upgrades[upgrade2.upFor].name + ', +' + upgrades[upgrade2.upFor].amount + ' likes per sekund.';
+    document.getElementById(upgrades[upgrade2.upFor].name).textContent = upgrades[upgrade2.upFor].name + ', +' + upgrades[upgrade2.upFor].amount + ' PPS.';
     document.getElementById(upgrade2.tag).remove();
     F = upgrade2.tag;
     upgrades2 = upgrades2.filter(i => i.tag != F)
@@ -183,10 +197,17 @@ function createCard(upgrade) {
   const header = document.createElement('p');
   header.classList.add('title');
   header.setAttribute("id", upgrade.name)
+  const total = document.createElement('p');
+  total.setAttribute("id", upgrade.name + ' total')
   const cost = document.createElement('p');
+  cost.setAttribute("id", upgrade.name + ' cost')
+  cost.style.fontWeight = 900
+  cost.style.fontSize = "x-large"
+  cost.style.margin = "10px"
 
-  header.textContent = upgrade.name + ', +' + upgrade.amount + ' likes per sekund.';
-  cost.textContent = 'Köp för ' + upgrade.cost + ' likes';
+  header.textContent = upgrade.name + ', +' + upgrade.amount + ' PPS.';
+  cost.textContent = upgrade.cost + ' P';
+  total.textContent = 0;
 
   card.addEventListener('click', (e) => {
     if (money >= upgrade.cost) {
@@ -194,7 +215,7 @@ function createCard(upgrade) {
       moneyPerClick++;
       money -= upgrade.cost;
       upgrade.cost = Math.round(upgrade.cost * 1.15);
-      cost.textContent = 'Köp för ' + upgrade.cost + ' likes';
+      cost.textContent = upgrade.cost + ' P';
       moneyPerSecond = 0;
       upgrade.count++
       for (i = 0; i < upgrades.length; i++){
@@ -215,6 +236,7 @@ function createCard(upgrade) {
   });
 
   card.appendChild(header);
+  card.appendChild(total);
   card.appendChild(cost);
   return card;
 }

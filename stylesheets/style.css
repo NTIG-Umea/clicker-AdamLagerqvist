@@ -10,9 +10,25 @@ footer {
 
 /* clicker */
 #click {
-  width: 8rem;
-  height: 8rem;
+  width: 14rem;
+  height: 14rem;
   font-size: 2rem;
+  background-color: white;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.green {
+  color: rgb(17, 177, 17);
+}
+
+.red {
+  color: rgb(158, 4, 4);
 }
 
 #msgbox {
@@ -58,6 +74,11 @@ footer {
 .w-100 {
   width: 100%;
 }
+
+.w-50 {
+  width: 50%;
+}
+
 
 .d-flex {
   display: flex;
