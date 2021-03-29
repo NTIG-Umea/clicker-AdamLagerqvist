@@ -11,8 +11,9 @@ const clickerButton = document.querySelector('#click');
 const moneyTracker = document.querySelector('#money');
 const mpsTracker = document.querySelector('#mps');
 const followerTracker = document.querySelector('#followers');
-const upgradeList = document.querySelector('#upgradelist')
-const msgbox = document.querySelector('#msgbox')
+const upgradeList = document.querySelector('#upgradelist');
+const upgradeList2 = document.querySelector('#upgradelist2');
+const msgbox = document.querySelector('#msgbox');
 
 /* Följande variabler använder vi för att hålla reda på hur mycket pengar som
  * spelaren, har och tjänar.
@@ -25,6 +26,7 @@ let money = 0;
 let moneyPerClick = 1;
 let moneyPerSecond = 0;
 let last = 0;
+let F = "placeholder";
 
 /* Med ett valt element, som knappen i detta fall så kan vi skapa listeners
  * med addEventListener så kan vi lyssna på ett specifikt event på ett html-element
@@ -79,6 +81,9 @@ window.addEventListener('load', (event) => {
   upgrades.forEach(upgrade => {
     upgradeList.appendChild(createCard(upgrade));
   });
+  upgrades2.forEach(upgrade2 => {
+    upgradeList2.appendChild(createCard2(upgrade2));
+  });
   window.requestAnimationFrame(step);
 });
 
@@ -93,19 +98,30 @@ upgrades = [
   {
     name: 'Arg gubbe',
     cost: 10,
-    amount: 1
+    amount: 1,
+    count: 0,
+    up: 1,
+    index: 0
   },
   {
     name: 'Internettroll',
-    cost: 100,
-    amount: 10
+    cost: 110,
+    amount: 10,
+    count: 0,
+    up: 1,
+    index: 1
   },
   {
     name: 'Twitterbot',
-    cost: 1000,
-    amount: 100
+    cost: 1210,
+    amount: 100,
+    count: 0,
+    up: 1,
+    index: 2
   }
 ]
+
+upgrades2 = [];
 
 /* createCard är en funktion som tar ett upgrade objekt som parameter och skapar
  * ett html kort för det.
@@ -125,11 +141,48 @@ upgrades = [
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
  */
+
+function createCard2(upgrade2) {
+  const card2 = document.createElement('div');
+  card2.setAttribute("id", upgrade2.tag);
+  card2.classList.add('card');
+  const header2 = document.createElement('p');
+  header2.classList.add('title');
+  const cost2 = document.createElement('p');
+
+  header2.textContent = upgrade2.name2;
+  cost2.textContent = 'Köp för ' + upgrade2.cost2 + ' likes';
+
+  card2.addEventListener('click', (e) => {
+    if (money >= upgrade2.cost2) {
+      money -= upgrade2.cost2;
+      moneyPerSecond = 0;
+      upgrades[upgrade2.upFor].amount = upgrades[upgrade2.upFor].amount * upgrade2.upAmount;
+    for (i = 0; i < upgrades.length; i++){
+      moneyPerSecond += upgrades[i].amount * upgrades[i].count;
+    }
+    document.getElementById(upgrades[upgrade2.upFor].name).textContent = upgrades[upgrade2.upFor].name + ', +' + upgrades[upgrade2.upFor].amount + ' likes per sekund.';
+    document.getElementById(upgrade2.tag).remove();
+    F = upgrade2.tag;
+    upgrades2 = upgrades2.filter(i => i.tag != F)
+    message('Grattis du har en ny följare!', 'success');
+    } else {
+      message('Du har inte råd.', 'warning');
+    }
+  });
+
+  card2.appendChild(header2);
+  card2.appendChild(cost2);
+  window.requestAnimationFrame(step);
+  return card2;
+}
+
 function createCard(upgrade) {
   const card = document.createElement('div');
   card.classList.add('card');
   const header = document.createElement('p');
   header.classList.add('title');
+  header.setAttribute("id", upgrade.name)
   const cost = document.createElement('p');
 
   header.textContent = upgrade.name + ', +' + upgrade.amount + ' likes per sekund.';
@@ -140,9 +193,21 @@ function createCard(upgrade) {
       followers++;
       moneyPerClick++;
       money -= upgrade.cost;
-      upgrade.cost *= 1.5;
+      upgrade.cost = Math.round(upgrade.cost * 1.15);
       cost.textContent = 'Köp för ' + upgrade.cost + ' likes';
-      moneyPerSecond += upgrade.amount;
+      moneyPerSecond = 0;
+      upgrade.count++
+      for (i = 0; i < upgrades.length; i++){
+        moneyPerSecond += upgrades[i].amount * upgrades[i].count;
+      }
+      if(upgrade.up * 10 <= upgrade.count){
+        let upgrade2 = {upFor: upgrade.index,tag: upgrade.name + upgrade.count, upAmount: 2, name2: upgrade.name + " x" + 2, cost2: upgrade.cost * 5} ;
+        upgrades2.push(upgrade2);
+        upgrade.up++;
+        upgradeList2.appendChild(createCard2(upgrade2));
+        window.requestAnimationFrame(step);
+      }
+
       message('Grattis du har en ny följare!', 'success');
     } else {
       message('Du har inte råd.', 'warning');
