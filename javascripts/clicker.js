@@ -63,6 +63,7 @@ function step(timestamp) {
   }
   mpsTracker.textContent = moneyPerSecond;
   followerTracker.textContent = moneyPerClick;
+
   upgrades.forEach(upgrade => {
     document.getElementById(upgrade.name + ' total').textContent = 'You have ' + upgrade.count + ' making a total of ' + upgrade.amount * upgrade.count + '  PPS'
     if(upgrade.cost <= money){
@@ -72,8 +73,8 @@ function step(timestamp) {
     }
   });
 
-  if (timestamp >= last + 1000) {
-    money += moneyPerSecond;
+  if (timestamp >= last + 100) {
+    money += moneyPerSecond * 0.1;
     last = timestamp;
   }
   window.requestAnimationFrame(step);
@@ -110,7 +111,7 @@ window.addEventListener('load', (event) => {
  */
 upgrades = [
   {
-    name: 'Arg gubbe',
+    name: '"Friends"',
     cost: 10,
     amount: 1,
     count: 0,
@@ -118,7 +119,7 @@ upgrades = [
     index: 0
   },
   {
-    name: 'Internettroll',
+    name: 'Luberjack',
     cost: 110,
     amount: 10,
     count: 0,
@@ -126,12 +127,28 @@ upgrades = [
     index: 1
   },
   {
-    name: 'Twitterbot',
+    name: 'Chain saw',
     cost: 1210,
     amount: 100,
     count: 0,
     up: 1,
     index: 2
+  },
+  {
+    name: 'Pen shredder',
+    cost: 13310,
+    amount: 1000,
+    count: 0,
+    up: 1,
+    index: 3
+  },
+  {
+    name: 'Harvester',
+    cost: 146410,
+    amount: 10000,
+    count: 0,
+    up: 1,
+    index: 4
   }
 ]
 
@@ -163,9 +180,14 @@ function createCard2(upgrade2) {
   const header2 = document.createElement('p');
   header2.classList.add('title');
   const cost2 = document.createElement('p');
+  cost2.setAttribute("id", upgrade2.name + ' cost2')
+  cost2.style.fontWeight = 900
+  cost2.style.fontSize = "x-large"
+  cost2.style.margin = "10px"
+
 
   header2.textContent = upgrade2.name2;
-  cost2.textContent = 'Köp för ' + upgrade2.cost2 + ' likes';
+  cost2.textContent = upgrade2.cost2 + ' P';
 
   card2.addEventListener('click', (e) => {
     if (money >= upgrade2.cost2) {
@@ -179,9 +201,6 @@ function createCard2(upgrade2) {
     document.getElementById(upgrade2.tag).remove();
     F = upgrade2.tag;
     upgrades2 = upgrades2.filter(i => i.tag != F)
-    message('Grattis du har en ny följare!', 'success');
-    } else {
-      message('Du har inte råd.', 'warning');
     }
   });
 
@@ -227,11 +246,7 @@ function createCard(upgrade) {
         upgrade.up++;
         upgradeList2.appendChild(createCard2(upgrade2));
         window.requestAnimationFrame(step);
-      }
-
-      message('Grattis du har en ny följare!', 'success');
-    } else {
-      message('Du har inte råd.', 'warning');
+      } 
     }
   });
 

@@ -1,6 +1,11 @@
 /* elements */
 img {
-  max-width: 100%;
+  max-width: 80%;
+}
+
+body {
+  background-color: #17bbd8;
+  margin: 0%;
 }
 
 footer {
@@ -13,7 +18,7 @@ footer {
   width: 14rem;
   height: 14rem;
   font-size: 2rem;
-  background-color: white;
+  background-color: rgba(23, 187, 216, 0);
   border: none;
   color: white;
   text-align: center;
@@ -50,6 +55,8 @@ footer {
 }
 
 .card {
+  background-color: white;
+  border-radius: 3vw;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
@@ -116,7 +123,7 @@ footer {
 }
 
 .container {
-  width: 100%;
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
@@ -128,6 +135,11 @@ footer {
   .container {
     max-width: 540px;
   }
+
+  #upgradelist2 {
+    width: 90%;
+  }
+
 }
 @media (min-width: 768px) {
   .container {
