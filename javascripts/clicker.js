@@ -73,8 +73,8 @@ function step(timestamp) {
     }
   });
 
-  if (timestamp >= last + 100) {
-    money += moneyPerSecond * 0.1;
+  if (timestamp >= last + 10) {
+    money += moneyPerSecond * 0.01;
     last = timestamp;
   }
   window.requestAnimationFrame(step);
